@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.confstr.android
+package co.comingle.android
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -24,16 +24,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.confstr.android.ui.theme.ConfstrTheme
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import co.comingle.android.ui.theme.ComingleTheme
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
-      ConfstrTheme {
+      ComingleTheme {
         // A surface container using the 'background' color from the theme
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-          Greeting()
+          ComingleNavHost()
+//          Greeting { navController.navigate("conferenceList") }
         }
       }
     }
@@ -41,19 +46,19 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(modifier: Modifier = Modifier) {
+fun Greeting(modifier: Modifier = Modifier, onConnect: () -> Unit) {
   Column(modifier = Modifier.padding(24.dp)) {
     Text(
-      text = "Welcome to Confstr!",
+      text = "Welcome to Comingle!",
       modifier = modifier
     )
     Spacer(Modifier.size(20.dp))
-    NostrLogin()
+    NostrLogin(onConnect)
   }
 }
 
 @Composable
-fun NostrLogin() {
+fun NostrLogin(onConnect: () -> Unit) {
   var conferenceRelay by remember { mutableStateOf("") }
   var conferencePubkey by remember { mutableStateOf("") }
 
@@ -93,17 +98,41 @@ fun NostrLogin() {
     }
 
     Button(
-      onClick = {}
+      onClick = onConnect
     ) {
       Text("Connect to see Conferences")
     }
   }
 }
 
+@Composable
+fun ComingleNavHost(
+  modifier: Modifier = Modifier,
+  navController: NavHostController = rememberNavController(),
+  startDestination: String = "login"
+) {
+  NavHost(
+    modifier = modifier,
+    navController = navController,
+    startDestination = startDestination
+  ) {
+    composable("login") {
+      Greeting { navController.navigate("conferenceList") }
+    }
+    composable("conferenceList") { ConferenceListScreen(/*...*/) }
+  }
+}
+
+@Composable
+fun ConferenceListScreen() {
+  Text("Conference List")
+}
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-  ConfstrTheme {
-    Greeting()
+  ComingleTheme {
+    ComingleNavHost()
+//    Greeting { navController.navigate("conferenceList") }
   }
 }

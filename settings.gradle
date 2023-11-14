@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "Confstr"
+rootProject.name = "Comingle"
 include ':app'

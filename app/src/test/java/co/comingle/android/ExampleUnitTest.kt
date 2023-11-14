@@ -1,4 +1,4 @@
-package com.confstr.android
+package co.comingle.android
 
 import org.junit.Test
 
